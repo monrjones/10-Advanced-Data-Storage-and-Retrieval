@@ -17,8 +17,8 @@ Base = automap_base()
 # reflect the tables
 Base.prepare(engine, reflect=True)
 # Save reference to the table
-Measurement = Base.classes.measurement
-Station = Base.classes.station
+Measurement = Base.classes.Measurement
+Station = Base.classes.Station
 
 # Create our session (link) from Python to the DB
 session = Session(engine)
@@ -84,25 +84,25 @@ def tobs():
     return jsonify(tobs_list) 
 
 @app.route("/api/v1.0/<start>")
-def start(start=None):
+def starting_temp(start):
 
   
     """Return a JSON list of min, max, avg """
 
-    starting_temp = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start).group_by(Measurement.date).all()
-    starting_temp_list(starting_temp)
-    return jsonify(starting_temp_list)
+    start_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start).all()
+
+    return jsonify(start_temp)
 
     
 
 @app.route("/api/v1.0/<start>/<end>")
-def start_end(start=None, end=None):
+def start_end(start, end):
 
     """Inbetween dates"""
     
-    start_end_temp = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).group_by(Measurement.date).all()
-    start_end_temp_list=list(start_end_temp)
-    return jsonify(start_end_temp_list)
+    start_end_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(and_(Measurement.date >= start, Measurement.date <= end)).all()
+    
+    return jsonify(start_end_temp)
 
 
 
