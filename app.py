@@ -95,7 +95,8 @@ def starting_temp(start):
 
     
 
-@app.route("/api/v1.0/<start>/<end>")
+@app.route("/api/v1.0/<start>/@app.route("/api/v1.0/<start>/<end>")
+<end>")
 def start_end(start, end):
 
     """Inbetween dates"""
